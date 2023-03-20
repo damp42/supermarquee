@@ -1,6 +1,6 @@
 import { templateVertical, templateHorizontal } from "./Template.js";
 import { Configuration } from "./Configuration.js";
-import { Event } from "./Event.js";
+import { SMEvent } from "./Event.js";
 import { TickLogic } from "./TickLogic.js";
 import { RssFeedReader } from "./RssFeedReader.js";
 import { Util } from "./Util.js";
@@ -10,7 +10,7 @@ let hasLicenseTextBeenShown = false;
 function Core( root, config )
 {
     const self = this,
-          events = new Event( this );
+          events = new SMEvent( this );
 
     let fnTick = TickLogic.fnNoScroll.bind( this );
     this.elems = {
@@ -219,8 +219,8 @@ function Core( root, config )
             this.updateTickLogic();
             this.elems.container.style.visibility = 'visible';
             this.onIntoView();
+            this.getEvents().triggerInit()
         }, 100 );
-
         // Init
         this._currentXPos = 0;
         this._currentYPos = 0;
@@ -354,6 +354,7 @@ function Core( root, config )
 
         fnTick( deltaTime );
 
+        this.getEvents().triggerUpdate();
         this._rafId = window.requestAnimationFrame( this.tick );
     }.bind ( this );
 

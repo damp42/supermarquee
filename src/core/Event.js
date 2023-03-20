@@ -1,4 +1,4 @@
-function Event( i )
+function SMEvent( i )
 {
     const inst = i;
 
@@ -8,34 +8,40 @@ function Event( i )
     };
 }
 
-Event.prototype.triggerInit = function()
+SMEvent.prototype.triggerInit = function()
 {
     let elem = this.getInstance().getRootElement();
     elem.dispatchEvent( new Event( "init" ) );
 };
 
-Event.prototype.triggerStart = function()
+SMEvent.prototype.triggerStart = function()
 {
     let elem = this.getInstance().getRootElement();
     elem.dispatchEvent( new Event( "start" ) );
 };
 
-Event.prototype.triggerLoop = function()
+SMEvent.prototype.triggerLoop = function()
 {
     let elem = this.getInstance().getRootElement();
     elem.dispatchEvent( new Event( "loop" ) );
 };
 
-Event.prototype.triggerPause = function()
+SMEvent.prototype.triggerPause = function()
 {
     let elem = this.getInstance().getRootElement();
     elem.dispatchEvent( new Event( "pause" ) );
 };
 
-Event.prototype.triggerResume = function()
+SMEvent.prototype.triggerResume = function()
 {
     let elem = this.getInstance().getRootElement();
     elem.dispatchEvent( new Event( "resume" ) );
 };
 
-export { Event };
+SMEvent.prototype.triggerUpdate = function()
+{
+    let elem = this.getInstance().getRootElement();
+    elem.dispatchEvent( new Event( "update" ) );
+};
+
+export { SMEvent };

@@ -5,6 +5,7 @@
   "type" : "module",
   "main": "src/core/SuperMarquee.js",
   "scripts": {
+    "watch": "rollup -c -w",
     "build": "rollup -c"
   },
   "repository": {

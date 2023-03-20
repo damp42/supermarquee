@@ -471,7 +471,7 @@
 	    "spacer" : null
 	};
 
-	function Event( i )
+	function SMEvent( i )
 	{
 	    const inst = i;
 
@@ -481,34 +481,40 @@
 	    };
 	}
 
-	Event.prototype.triggerInit = function()
+	SMEvent.prototype.triggerInit = function()
 	{
 	    let elem = this.getInstance().getRootElement();
 	    elem.dispatchEvent( new Event( "init" ) );
 	};
 
-	Event.prototype.triggerStart = function()
+	SMEvent.prototype.triggerStart = function()
 	{
 	    let elem = this.getInstance().getRootElement();
 	    elem.dispatchEvent( new Event( "start" ) );
 	};
 
-	Event.prototype.triggerLoop = function()
+	SMEvent.prototype.triggerLoop = function()
 	{
 	    let elem = this.getInstance().getRootElement();
 	    elem.dispatchEvent( new Event( "loop" ) );
 	};
 
-	Event.prototype.triggerPause = function()
+	SMEvent.prototype.triggerPause = function()
 	{
 	    let elem = this.getInstance().getRootElement();
 	    elem.dispatchEvent( new Event( "pause" ) );
 	};
 
-	Event.prototype.triggerResume = function()
+	SMEvent.prototype.triggerResume = function()
 	{
 	    let elem = this.getInstance().getRootElement();
 	    elem.dispatchEvent( new Event( "resume" ) );
+	};
+
+	SMEvent.prototype.triggerUpdate = function()
+	{
+	    let elem = this.getInstance().getRootElement();
+	    elem.dispatchEvent( new Event( "update" ) );
 	};
 
 	const TickLogic = {
@@ -758,13 +764,12 @@
 	        {
 	            for ( let i = 0; i < items.length; i++ )
 	            {
-	                console.log( items[ i ] );
 	                feedData.push(
 	                    {
 	                        "title" : 0 < items[ i ].getElementsByTagName( 'title' ).length ? items[ i ].getElementsByTagName( 'title' )[ 0 ].innerHTML : null,
 	                        "link" : 0 < items[ i ].getElementsByTagName( 'link' ).length ? items[ i ].getElementsByTagName( 'link' )[ 0 ].innerHTML : null,
 	                        "pubDate" : 0 < items[ i ].getElementsByTagName( 'pubDate' ).length ? new Date( items[ i ].getElementsByTagName( 'pubDate' )[ 0 ].innerHTML ) : null,
-	                        "description" : 0 < items[ i ].getElementsByTagName( 'description' ).length && items[ i ].getElementsByTagName( 'description' )[ 0 ].hasOwnProperty( 'firstChild' ) ? items[ i ].getElementsByTagName( 'description' )[ 0 ].firstChild.wholeText.trim() : null,
+	                        "description" : 0 < items[ i ].getElementsByTagName( 'description' ).length && items[ i ].getElementsByTagName( 'description' )[ 0 ].firstChild ? items[ i ].getElementsByTagName( 'description' )[ 0 ].firstChild.wholeText.trim() : null,
 	                        "content" : 0 < items[ i ].getElementsByTagName( 'content' ).length ? items[ i ].getElementsByTagName( 'content' )[ 0 ].innerHTML : null
 	                    }
 	                );
@@ -800,7 +805,7 @@
 	function Core( root, config )
 	{
 	    const self = this,
-	          events = new Event( this );
+	          events = new SMEvent( this );
 
 	    let fnTick = TickLogic.fnNoScroll.bind( this );
 	    this.elems = {
@@ -924,15 +929,6 @@
 	                    scrollContent += this.config.spacer;
 	                }
 	            }
-
-	            /*
-
-	            const rssFeedContent = RssFeedReader.getScrollContentOfFeed( this.config.rssFeedUrl, this.config.spacer );
-	            if( rssFeedContent && rssFeedContent.length > 0 )
-	            {
-	                scrollContent += rssFeedContent;
-	            }
-	             */
 	        }
 
 	        if ( Configuration.TYPE_HORIZONTAL === this.config.type )
@@ -1018,7 +1014,10 @@
 	            this.updateTickLogic();
 	            this.elems.container.style.visibility = 'visible';
 	            this.onIntoView();
+	            this.getEvents().triggerInit();
 	        }, 100 );
+
+
 
 	        // Init
 	        this._currentXPos = 0;
@@ -1153,6 +1152,7 @@
 
 	        fnTick( deltaTime );
 
+	        this.getEvents().triggerUpdate();
 	        this._rafId = window.requestAnimationFrame( this.tick );
 	    }.bind ( this );
 
