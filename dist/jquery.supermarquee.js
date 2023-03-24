@@ -1015,9 +1015,6 @@
 	            this.onIntoView();
 	            this.getEvents().triggerInit();
 	        }, 100 );
-
-
-
 	        // Init
 	        this._currentXPos = 0;
 	        this._currentYPos = 0;
